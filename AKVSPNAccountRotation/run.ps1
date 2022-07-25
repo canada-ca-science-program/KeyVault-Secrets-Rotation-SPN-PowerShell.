@@ -1,24 +1,5 @@
 param($eventGridEvent, $TriggerMetadata)
 
-function RegenerateCredential($credentialId, $providerAddress){
-    Write-Host "Regenerating credential. Id: $credentialId Resource Id: $providerAddress"
-    
-    #Write code to regenerate credential, update your service with new credential and return it
-
-    #EXAMPLE FOR STORAGE
-
-    <#  
-    $storageAccountName = ($providerAddress -split '/')[8]
-    $resourceGroupName = ($providerAddress -split '/')[4]
-    
-    #Regenerate key 
-    $operationResult = New-AzStorageAccountKey -ResourceGroupName $resourceGroupName -Name $storageAccountName -KeyName $credentialId
-    $newCredentialValue = (Get-AzStorageAccountKey -ResourceGroupName $resourceGroupName -AccountName $storageAccountName|where KeyName -eq $credentialId).value 
-    return $newCredentialValue
-    
-    #>
-}
-
 function GetAlternateCredentialId($credentialId){
     #Write code to get alternate credential id for your service
 
@@ -37,6 +18,45 @@ function GetAlternateCredentialId($credentialId){
        return "key1"
    }
    #>
+}
+
+function RegenerateCredential($providerAddress){
+    
+    
+    
+    Write-Host "Regenerating credential. Id: $credentialId Resource Id: $providerAddress"
+    #get enterprise App 
+    $spn = Get-AzADServicePrincipal -ObjectId $providerAddress
+    
+    #get reg app 
+    
+    $app = Get-AzADApplication -ApplicationId $spn.AppId
+
+    #nuke all old keys 
+
+    $app | Remove-AzADAppCredential
+
+    #create new secret     
+    $newSecret = $app | New-AzADAppCredential 
+
+    #return key secret  
+    return $newSecret.SecretText
+
+
+    #Write code to regenerate credential, update your service with new credential and return it
+
+    #EXAMPLE FOR STORAGE
+
+    <#  
+    $storageAccountName = ($providerAddress -split '/')[8]
+    $resourceGroupName = ($providerAddress -split '/')[4]
+    
+    #Regenerate key 
+    $operationResult = New-AzStorageAccountKey -ResourceGroupName $resourceGroupName -Name $storageAccountName -KeyName $credentialId
+    $newCredentialValue = (Get-AzStorageAccountKey -ResourceGroupName $resourceGroupName -AccountName $storageAccountName|where KeyName -eq $credentialId).value 
+    return $newCredentialValue
+    
+    #>
 }
 
 function AddSecretToKeyVault($keyVAultName,$secretName,$secretvalue,$exprityDate,$tags){

@@ -1,37 +1,36 @@
-# ###THIS IS TEMPLATE PROJECT FOR SECRET ROTATION FUNCTIONS. FOLLOW [THIS](https://github.com/Azure/KeyVault-Secrets-Rotation-Template-PowerShell/blob/main/Project-Template-Instructions.md) STEPS TO CREATE NEW SECRETS ROTATION FUNCTION PROJECT REPOSITORY###.
+# KeyVault-Secrets-Rotation-SPN-PowerShell
 
-# KeyVault-Secrets-Rotation-[ServiceType]-PowerShell
-
-Functions regenerate individual key (alternating between two keys) in [ServiceType] and add regenerated key to Key Vault as new version of the same secret.
+Functions regenerate individual key (alternating between two keys) in SPN and add regenerated key to Key Vault as new version of the same secret.
 
 ## Features
 
 This project framework provides the following features:
 
-* Rotation function for [ServiceType] key triggered by Event Grid (AKV[ServiceType]Rotation)
+* Rotation function for SPN secret triggered by Event Grid (AKVSPNRotation)
 
-* Rotation function for [ServiceType] key triggered by HTTP call (AKV[ServiceType]RotationHttp)
+* Rotation function for SPN secret triggered by HTTP call (AKVSPNRotationHttp)
 
 * ARM template for function deployment with secret deployment (optional)
 
-* ARM template for adding [ServiceType] key to existing function with secret deployment (optional)
+* ARM template for adding SPN secret to existing function with secret deployment (optional)
 
 ## Getting Started
 
 Functions require following information stored in secret as tags:
 
 * $secret.Tags["ValidityPeriodDays"] - number of days, it defines expiration date for new secret
-* $secret.Tags["CredentialId"] - [ServiceType] credential id
-* $secret.Tags["ProviderAddress"] - [ServiceType] Resource Id
+* $secret.Tags["AccountEndDate"] - number of days, it defines expiration date for new secret
+* $secret.Tags["CredentialId"] - SPN credential id
+* $secret.Tags["ProviderAddress"] - SPN Resource Id
 
-You can create new secret with above tags and [ServiceType] key as value or add those tags to existing secret with [ServiceType] key. For automated rotation expiry date will also be required - key vault triggers 'SecretNearExpiry' event 30 days before expiry.
+You can create new secret with above tags and SPN secret as value or add those tags to existing secret with SPN secret. For automated rotation expiry date will also be required - key vault triggers 'SecretNearExpiry' event 30 days before expiry.
 
 There are two available functions performing same rotation:
 
-* AKV[ServiceType]Rotation - event triggered function, performs [ServiceType] key rotation triggered by Key Vault events. In this setup Near Expiry event is used which is published 30 days before expiration
-* AKV[ServiceType]RotationHttp - on-demand function with KeyVaultName and Secret name as parameters
+* AKVSPNRotation - event triggered function, performs SPN key rotation triggered by Key Vault events. In this setup Near Expiry event is used which is published 30 days before expiration
+* AKVSPNRotationHttp - on-demand function with KeyVaultName and Secret name as parameters
 
-Functions are using Function App identity to access Key Vault and existing secret "CredentialId" tag with [ServiceType] key id (key1/key2) and "ProviderAddress" with [ServiceType] Resource Id.
+Functions are using Function App identity to access Key Vault and existing secret "CredentialId" tag with SPN key id (key1/key2) and "ProviderAddress" with SPN Resource Id.
 
 ### Installation
 

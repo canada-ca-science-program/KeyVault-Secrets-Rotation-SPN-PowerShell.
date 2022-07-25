@@ -75,14 +75,13 @@
                 "description": "Secret validity period days. It is used to calculate expiration date for a secret after rotation"
             }
         }
-       
     },
     "variables": {
         "functionStorageAccountName": "[concat(uniquestring(parameters('functionAppName')), 'fnappstrg')]",
         "eventSubscriptionName": "[concat(parameters('functionAppName'),'-',parameters('secretName'))]",
         "appServiceSKU":"[if(equals(parameters('appServicePlanType'),'Consumption Plan'),'Y1','P1V2')]",
-        "repoURL": i.e. "https://github.com/ssc-sp/KeyVault-Secrets-Rotation-SPN-PowerShell.git"
-        //"ProviderResourceId": i.e. "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',parameters('StorageAccountRG'),'/providers/Microsoft.Storage/storageAccounts/',parameters('storageAccountName'))]"
+        "repoURL": "https://github.com/ssc-sp/KeyVault-Secrets-Rotation-SPN-PowerShell.git",
+        "ProviderResourceId": "SPN Object ID"
     },
     "resources": [
         {
@@ -106,7 +105,6 @@
             },
             "properties": {
                 "name": "[concat(resourceGroup().name, '-SPN-rotation-fnapp-plan')]"
-               
             }
         },
         {
@@ -245,26 +243,26 @@
                                 }
                             }
                         },
-                        //EXAMPLE OF STORAGE ACCOUNT KEY DEPLOYMENT
-                        // {
-                        //     "type": "Microsoft.KeyVault/vaults/secrets",
-                        //     "apiVersion": "2019-09-01",
-                        //     "condition": "[parameters('deploySecretWithStorageAccountKeyToKeyVault')]",
-                        //     "name": "[concat(parameters('keyVaultName'), '/', parameters('secretName'))]",
-                        //     "location": "[resourceGroup().location]",
-                        //     "dependsOn": [],
-                        //     "tags": {
-                        //         "ValidityPeriodDays":"[parameters('secretValidityPeriodDays')]",
-                        //         "CredentialId":"key1",
-                        //         "ProviderAddress":"[variables('ProviderResourceId')]"
-                        //     },
-                        //     "properties": {
-                        //         "value": "[listKeys(variables('ProviderResourceId'), '2019-04-01').keys[0].value]",
-                        //         "attributes": {
-                        //             "exp": "[parameters('secretExpirationDateUnixTime')]"
-                        //         }
-                        //     }
-                        // }
+                         {
+                             "type": "Microsoft.KeyVault/vaults/secrets",
+                             "apiVersion": "2019-09-01",
+                             "condition": "[parameters('deploySecretWithStorageAccountKeyToKeyVault')]",
+                             "name": "[concat(parameters('keyVaultName'), '/', parameters('secretName'))]",
+                             "location": "[resourceGroup().location]",
+                             "dependsOn": [],
+                             "tags": {
+                                 "ValidityPeriodDays":"[parameters('secretValidityPeriodDays')]",
+                                 "CredentialId":"",
+                                 "ProviderAddress":"[variables('ProviderResourceId')]",
+                                 "AccountEndDate" : "31"
+                             },
+                             "properties": {
+                                 "value": "fish",
+                                 "attributes": {
+                                     "exp": "[parameters('secretExpirationDateUnixTime')]"
+                                 }
+                             }
+                         }
                     ]
                 }
             }
@@ -283,21 +281,7 @@
                 "template": {
                     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                     "contentVersion": "1.0.0.0",
-                    "resources": [
-                        {
-            //EXAMPLE OF GRANTING ACCESS TO STORAGE
-            //                 "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
-            //                 "apiVersion": "2018-09-01-preview",
-            //                 "name": "[concat(parameters('storageAccountName'), '/Microsoft.Authorization/', guid(concat(parameters('storageAccountName'),reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')),'2019-08-01', 'Full').identity.principalId)))]",
-            //                 "dependsOn": [
-                            
-            //                 ],
-            //                 "properties": {
-            //                     "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '81a9662b-bebf-436f-a333-f67b29880f12')]",
-            //                     "principalId": "[reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')),'2019-08-01', 'Full').identity.principalId]"
-            //                 }
-                        }
-                    ]
+                    "resources": [ ]
                 }
             }
         }

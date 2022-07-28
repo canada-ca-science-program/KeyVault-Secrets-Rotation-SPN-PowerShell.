@@ -2,18 +2,11 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-          "SPNRG": {
-            "defaultValue": "[resourceGroup().name]",
-            "type": "String",
-            "metadata": {
-                "description": "The name of the resource group where SPN with keys to rotate has deployed."
-            }
-        },
-        "SPNName": {
+        "SPN_Object_ID": {
             "defaultValue": "",
             "type": "String",
             "metadata": {
-                "description": "The name of the SPN with keys to rotate."
+                "description": "The object ID of the SPN with secrets to rotate."
             }
         },
         "keyVaultRG": {
@@ -81,7 +74,7 @@
         "eventSubscriptionName": "[concat(parameters('functionAppName'),'-',parameters('secretName'))]",
         "appServiceSKU":"[if(equals(parameters('appServicePlanType'),'Consumption Plan'),'Y1','P1V2')]",
         "repoURL": "https://github.com/ssc-sp/KeyVault-Secrets-Rotation-SPN-PowerShell.git",
-        "ProviderResourceId": "SPN Object ID"
+        "ProviderResourceId": "[parameters('SPN_Object_ID')]"
     },
     "resources": [
         {
@@ -264,24 +257,6 @@
                              }
                          }
                     ]
-                }
-            }
-        },
-        {
-            "name": "grant-access",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2019-10-01",
-            "subscriptionId": "[subscription().subscriptionId]",
-            "resourceGroup": "[parameters('SPNRG')]",
-            "dependsOn": [
-                 "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "resources": [ ]
                 }
             }
         }

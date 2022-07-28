@@ -12,7 +12,7 @@ Components:
 - Event Subscription
 - Secret deployment (optional)
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https://raw.githubusercontent.com/ssc-sp/KeyVault-Secrets-Rotation-SPN-PowerShell/main/ARM-Templates/Function/azuredeploy.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com/ssc-sp/KeyVault-Secrets-Rotation-SPN-PowerShell/main/ARM-Templates/Function/azuredeploy.json" target="_blank">
     <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.png"/>
 </a>
 <a href="http://armviz.io/#/?load=https://raw.githubusercontent.com/ssc-sp/KeyVault-Secrets-Rotation-SPN-PowerShell/main/ARM-Templates/Function/azuredeploy.json" target="_blank">

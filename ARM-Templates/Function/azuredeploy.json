@@ -239,7 +239,7 @@
                          {
                              "type": "Microsoft.KeyVault/vaults/secrets",
                              "apiVersion": "2019-09-01",
-                             "condition": "[parameters('deploySecretWithStorageAccountKeyToKeyVault')]",
+                             "condition": "[parameters('deploySecretWithSPNKeyToKeyVault')]",
                              "name": "[concat(parameters('keyVaultName'), '/', parameters('secretName'))]",
                              "location": "[resourceGroup().location]",
                              "dependsOn": [],
